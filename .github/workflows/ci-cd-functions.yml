@@ -25,6 +25,6 @@ jobs:
       - name: Deploy Function App a Azure
         uses: Azure/functions-action@v1
         with:
-          app-name: it-tools-funcapp-rony   # <-- aquí el nombre exacto
+          app-name: it-tools-funcapp-rony
           package: .
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
