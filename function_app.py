@@ -169,7 +169,7 @@ def start_provisioning_workflow(req: func.HttpRequest) -> func.HttpResponse:
 
 
 @app.function_name(name="run_gpt4o_advanced")
-@app.route(route="run_gpt4o_advanced", methods=["POST"], auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="run_gpt4o_advanced", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
 def run_gpt4o_advanced(req: func.HttpRequest) -> func.HttpResponse:
     try:
         body = req.get_json()
