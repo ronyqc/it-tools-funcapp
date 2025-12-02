@@ -34,6 +34,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # 👇 Aquí forzamos Python 3.11 para que coincida con tu Function App
+      - name: Setup Python 3.11 para deploy
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Setup Node (para instalar Core Tools)
         uses: actions/setup-node@v4
         with:
