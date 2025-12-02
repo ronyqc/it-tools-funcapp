@@ -6,9 +6,17 @@ import os
 import azure.functions as func
 from azure.data.tables import TableServiceClient
 from azure.core.exceptions import ResourceNotFoundError
+from openai import AzureOpenAI
+
 
 # Function App (modelo v2 con decoradores)
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+
+gpt4o_client = AzureOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    api_version="2024-05-01-preview",  # ajusta si usas otra versión
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+)
 
 # --- Configuración de Table Storage ---
 CONNECTION_STRING = os.getenv("AzureWebJobsStorage")
@@ -158,3 +166,49 @@ def start_provisioning_workflow(req: func.HttpRequest) -> func.HttpResponse:
         {"workflow_id": workflow_id, "started": True},
         200
     )
+
+
+@app.function_name(name="run_gpt4o_advanced")
+@app.route(route="run_gpt4o_advanced", methods=["POST"], auth_level=func.AuthLevel.FUNCTION)
+def run_gpt4o_advanced(req: func.HttpRequest) -> func.HttpResponse:
+    try:
+        body = req.get_json()
+        prompt = body.get("prompt")
+
+        if not prompt:
+            return func.HttpResponse(
+                json.dumps({"error": "El campo 'prompt' es obligatorio."}),
+                status_code=400,
+                mimetype="application/json"
+            )
+
+        completion = gpt4o_client.chat.completions.create(
+            model=os.getenv("AZURE_OPENAI_DEPLOYMENT_GPT4O"),  # nombre del deployment de GPT-4o
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a senior IT support and corporate communication assistant. "
+                        "Provide concise, clear and well-structured answers in Spanish, with tono profesional."
+                    )
+                },
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=400,
+            temperature=0.2,
+        )
+
+        answer = completion.choices[0].message.content
+
+        return func.HttpResponse(
+            json.dumps({"answer": answer}),
+            status_code=200,
+            mimetype="application/json"
+        )
+
+    except Exception as e:
+        return func.HttpResponse(
+            json.dumps({"error": str(e)}),
+            status_code=500,
+            mimetype="application/json"
+        )
