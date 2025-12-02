@@ -34,8 +34,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy Function App a Azure
-        uses: Azure/functions-action@v1
+      - name: Setup Node (para instalar Core Tools)
+        uses: actions/setup-node@v4
         with:
-          app-name: it-tools-funcapp-rony
-          package: .
+          node-version: '18'
+
+      - name: Instalar Azure Functions Core Tools v4
+        run: |
+          npm install -g azure-functions-core-tools@4 --unsafe-perm true
+
+      - name: Publicar Function App con Core Tools
+        run: |
+          func azure functionapp publish it-tools-funcapp-rony --python
