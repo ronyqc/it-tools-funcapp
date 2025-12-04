@@ -113,7 +113,7 @@ def get_ticket_status(req: func.HttpRequest) -> func.HttpResponse:
         return json_response({"error": "Ticket not found"}, 404)
 
 
-# 3) send_notification - igual que antes (mock)
+# 3) send_notification (mock)
 @app.route(route="send_notification", methods=["POST"])
 def send_notification(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("send_notification called")
@@ -137,7 +137,7 @@ def send_notification(req: func.HttpRequest) -> func.HttpResponse:
     return json_response({"success": True}, 200)
 
 
-# 4) start_provisioning_workflow - sigue mock
+# 4) start_provisioning_workflow - mock
 @app.route(route="start_provisioning_workflow", methods=["POST"])
 def start_provisioning_workflow(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("start_provisioning_workflow called")
@@ -167,7 +167,7 @@ def start_provisioning_workflow(req: func.HttpRequest) -> func.HttpResponse:
         200
     )
 
-
+# 4) Modelo GTP 4o
 @app.route(route="run_gpt4o_advanced", methods=["POST"])
 def run_gpt4o_advanced(req: func.HttpRequest) -> func.HttpResponse:
     try:
