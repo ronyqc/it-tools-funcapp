@@ -70,7 +70,7 @@ def create_ticket(req: func.HttpRequest) -> func.HttpResponse:
         logging.info(f"[TABLE] Ticket saved: {ticket_id}")
     except Exception as e:
         logging.error(f"[TABLE] Error saving ticket {ticket_id}: {e}")
-        # IMPORTANTE: no decirle al agente que se creó si falló el insert.
+        # IMPORTANTE: no decirle al agente que se creó si falló el insert. Prueba.
         return json_response(
             {"error": "Error saving ticket in storage"},
             500
